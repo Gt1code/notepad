@@ -5,7 +5,6 @@ A simple and responsive notepad web app built with **React**, **Node.js**, and *
 ## Features
 
 - Add, edit, and delete notes
-- Auto-save notes to local storage
 - Clean and mobile-friendly design
 
 ## Tech Stack
