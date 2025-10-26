@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NotesContext } from "./NotesContext";
 import api from "../api/NotesData";
 import { format } from "date-fns";
+import useAxiosFetch from "../hooks/useAxiosFetch";
 
 function NotesProvider({ children }) {
   // Note List default hardcoded state
@@ -42,22 +43,13 @@ function NotesProvider({ children }) {
     }
   };
 
-  // Data fetching on load/reload/mount
+  const { data, fetchError, isLoading, refetch } = useAxiosFetch(
+    "https://notepad-c972.onrender.com/notes"
+  );
+
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await api.get("/notes");
-        const allNotes = response.data;
-        const newestDateLists = sortNewestDate(allNotes);
-
-        setNoteList(newestDateLists);
-      } catch (err) {
-        handleError(err);
-      }
-    };
-
-    fetchNotes();
-  }, []);
+    setNoteList(data);
+  }, [data]);
 
   // search filter
   useEffect(() => {
@@ -99,8 +91,8 @@ function NotesProvider({ children }) {
       id: newId.toString(),
       datetime: currentDate.toISOString(),
       displayDate: formatDateTime,
-      title: newNoteTitle,
-      body: newNoteBody,
+      title: newNoteTitle.trim(),
+      body: newNoteBody.trim(),
     };
 
     return newNoteObj;
@@ -141,6 +133,9 @@ function NotesProvider({ children }) {
         newNoteBody,
         setNewNoteBody,
         addNote,
+        isLoading,
+        fetchError,
+        refetch,
       }}
     >
       {children}

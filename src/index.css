@@ -478,6 +478,29 @@ ul {
   display: none;
 }
 
+.error-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.error {
+  color: red;
+  margin-bottom: 0.5rem;
+}
+
+.retry-btn {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background-color: #555;
+}
+
 @media (max-width: 400px) {
   .footer {
     height: 64px;
