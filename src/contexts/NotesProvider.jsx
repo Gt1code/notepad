@@ -122,7 +122,6 @@ function NotesProvider({ children }) {
   return (
     <NotesContext.Provider
       value={{
-        name: "Dave",
         noteList,
         setNoteList,
         search,
