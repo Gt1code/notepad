@@ -19,17 +19,17 @@ function AddNotePage() {
       <header className="addNote-header">
         <h2>Add Note</h2>
         <div
-          className="done-icon-container"
+          className="done-svg"
           onClick={() => {
             addNote();
             navigate("/");
           }}
         >
-          <MdDoneOutline className="done-icon" />
+          <MdDoneOutline />
         </div>
       </header>
 
-      <form className="newNoteForm" onSubmit={(e) => e.preventDefault()}>
+      <form className="newNoteForm pb-72" onSubmit={(e) => e.preventDefault()}>
         <label htmlFor="noteTitle">Title</label>
         <input
           type="text"

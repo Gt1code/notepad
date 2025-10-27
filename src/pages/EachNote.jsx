@@ -44,7 +44,7 @@ function EachNote() {
   return (
     <main className="each-note">
       {note && (
-        <article>
+        <article style={{ paddingBottom: "20px", backgroundColor: "#111111" }}>
           <header className="each-note-header d-flex">
             <section className="left-arrow">
               <FaArrowLeftLong onClick={() => navigate("/")} />
@@ -74,9 +74,11 @@ function EachNote() {
             </section>
           </header>
 
-          <p className="fs-09">Date added || {note.displayDate}</p>
+          <div className="sticky">
+            <p className="fs-09">Date added || {note.displayDate}</p>
 
-          <h2>{note.title}</h2>
+            <h2>{note.title}</h2>
+          </div>
           <hr />
           <p className="overflow-body">{note.body}</p>
         </article>

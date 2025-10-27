@@ -3,7 +3,7 @@ import { NotesContext } from "../contexts/NotesContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdDoneOutline } from "react-icons/md";
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer";
 import { format } from "date-fns";
 import api from "../api/NotesData";
 import Swal from "sweetalert2";
@@ -87,17 +87,23 @@ function EditPage() {
       {myEdit && (
         <main className="addNote-page">
           <header className="addNote-header">
-            <FaArrowLeftLong onClick={() => navigate(`/notes/${myEdit.id}`)} />
+            <div className="edit-left-arrow">
+              <FaArrowLeftLong
+                onClick={() => navigate(`/notes/${myEdit.id}`)}
+              />
+            </div>
             <h2>Edit Note</h2>
             <div className="done-icon-container">
-              <MdDoneOutline
-                className="done-icon"
-                onClick={() => saveChangesPopUp(myEdit.id)}
-              />
+              <div className="done-svg">
+                <MdDoneOutline onClick={() => saveChangesPopUp(myEdit.id)} />
+              </div>
             </div>
           </header>
 
-          <form className="newNoteForm" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="newNoteForm pb-8"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <label htmlFor="noteTitle">Title</label>
             <input
               type="text"
@@ -119,7 +125,7 @@ function EditPage() {
             />
           </form>
 
-          <Footer />
+          {/* <Footer /> */}
         </main>
       )}
     </div>
