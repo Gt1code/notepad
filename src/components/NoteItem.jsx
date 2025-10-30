@@ -3,18 +3,9 @@ import { Link } from "react-router-dom";
 
 function NoteItem({ list }) {
   return (
-    <Link
-      className="link-style"
-      to={`/notes/${list.id}`}
-      style={{
-        flex: "1",
-        cursor: "auto",
-      }}
-    >
+    <Link className="link-style" to={`/notes/${list.id}`}>
       <li className="note-box">
-        <p className="date" style={{ fontSize: "0.95rem" }}>
-          {list.displayDate}
-        </p>
+        <p className="date fs-95">{list.displayDate}</p>
 
         <div className="note-header">
           <h3>{list.title ? list.title : "..."}</h3>

@@ -1,11 +1,10 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 function ErrorPage() {
   return (
-    <section className="err-page" style={{ color: "#f6f6f6dd" }}>
+    <section className="err-page">
       <h2>Page Not Found</h2>
-      <Link to={"/"} style={{ color: "#f6f6f6dd" }}>
+      <Link to={"/"}>
         <p>Go to Home</p>
       </Link>
     </section>

@@ -30,7 +30,7 @@ function NoteList() {
             ))}
           </ul>
         ) : (
-          <p style={{ textAlign: "center" }}>
+          <p className="text-center">
             {search ? "No matching notes found." : "No available notes."}
           </p>
         ))}

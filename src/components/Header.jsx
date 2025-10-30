@@ -47,8 +47,8 @@ function Header() {
       </div>
 
       {/* Sort icon */}
-      <div className="header-sort" onClick={toggleMenu}>
-        <MdOutlineSort className="sort-icon" />
+      <div className="header-sort">
+        <MdOutlineSort className="sort-icon" onClick={toggleMenu} />
       </div>
 
       {/* Backdrop overlay */}
@@ -98,34 +98,3 @@ function Header() {
 }
 
 export default Header;
-
-/* import React from "react";
-import { RiSettingsLine } from "react-icons/ri";
-import { BiFilterAlt } from "react-icons/bi";
-
-// look at my header. How do i include the code you just gave me now?
-
-function Header({ search, setSearch, handleSort }) {
-  return (
-    <header className="header">
-      <div className="form">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            placeholder="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </form>
-      </div>
-      <div className="header-setting">
-        <RiSettingsLine className="setting-icon" />
-      </div>
-      <div className="header-sort" onClick={handleSort}>
-        <BiFilterAlt className="sort-icon" />
-      </div>
-    </header>
-  );
-}
-
-export default Header; */

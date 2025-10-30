@@ -4,7 +4,7 @@ import NotesPage from "./pages/NotesPage";
 import AddNotePage from "./pages/AddNotePage";
 import EachNote from "./pages/EachNote";
 import EditPage from "./pages/EditPage";
-import ErrorPage from "./pages/ErrorPage";
+import ErrorPage from "./components/ErrorPage";
 
 const App = () => {
   return (

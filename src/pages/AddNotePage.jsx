@@ -3,6 +3,9 @@ import { MdDoneOutline } from "react-icons/md";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { NotesContext } from "../contexts/NotesContext";
+import api from "../api/NotesData";
+import Swal from "sweetalert2";
+import { showAlert } from "../utilities/Alert";
 
 function AddNotePage() {
   const navigate = useNavigate();
@@ -11,8 +14,49 @@ function AddNotePage() {
     setNewNoteTitle,
     newNoteBody,
     setNewNoteBody,
-    addNote,
+    buildNote,
+    noteList,
+    setNoteList,
+    logError,
   } = useContext(NotesContext);
+
+  const clearFieldsAndRedirect = () => {
+    setNewNoteTitle("");
+    setNewNoteBody("");
+    navigate("/");
+  };
+
+  const addNote = async () => {
+    if (!navigator.onLine)
+      return showAlert({
+        icon: "warning",
+        title: "offline",
+        text: "Please connect to the Internet before saving.",
+      });
+
+    try {
+      const newNoteObj = buildNote();
+      const response = await api.post("/notes", newNoteObj);
+      const updatedNotes = [...noteList, response.data].reverse();
+      setNoteList(updatedNotes);
+      clearFieldsAndRedirect();
+      showAlert({
+        html: "Note added",
+        timer: 500,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    } catch (err) {
+      logError(err);
+      showAlert({
+        icon: "error",
+        title: "Oops",
+        text: err.message || "Something went wrong",
+      });
+    }
+  };
 
   return (
     <main className="addNote-page">
@@ -22,7 +66,6 @@ function AddNotePage() {
           className="done-svg"
           onClick={() => {
             addNote();
-            navigate("/");
           }}
         >
           <MdDoneOutline />

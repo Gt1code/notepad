@@ -3,14 +3,15 @@ import { NotesContext } from "../contexts/NotesContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdDoneOutline } from "react-icons/md";
-// import Footer from "../components/Footer";
 import { format } from "date-fns";
 import api from "../api/NotesData";
-import Swal from "sweetalert2";
+import { showAlert } from "../utilities/Alert";
+import ErrorPage from "../components/ErrorPage";
 
 function EditPage() {
   const navigate = useNavigate();
-  const { noteList, setNoteList } = useContext(NotesContext);
+  const { noteList, setNoteList, sortNewestDate, logError } =
+    useContext(NotesContext);
   const { editId } = useParams();
   const myEdit = noteList.find((edit) => edit.id.toString() === editId);
   const [editTitle, setEditTitle] = useState("");
@@ -21,35 +22,59 @@ function EditPage() {
       setEditTitle(myEdit.title);
       setEditBody(myEdit.body);
     }
-  }, [myEdit, setEditTitle, setEditBody]);
+  }, [myEdit]);
 
+  const clearFieldsAndRedirect = () => {
+    setEditTitle("");
+    setEditBody("");
+    navigate("/");
+  };
+
+  const buildUpdatedNote = (id, title, body, time) => ({
+    id: id.toString(),
+    title: title.trim(),
+    datetime: time.toISOString(),
+    displayDate: format(time, "dd/MM/yy, pp"),
+    body: body.trim(),
+  });
+
+  // handleEdit function
   const handleEdit = async (id) => {
-    const currentTime = new Date();
+    if (!navigator.onLine)
+      return showAlert({
+        icon: "warning",
+        title: "offline",
+        text: "Please connect to the Internet before saving.",
+      });
 
-    const updatedPost = {
-      id: id.toString(),
-      title: editTitle.trim(),
-      datetime: currentTime.toISOString(),
-      displayDate: format(currentTime, "dd/MM/yy, pp"),
-      body: editBody.trim(),
-    };
+    const currentTime = new Date();
+    const updatedPost = buildUpdatedNote(id, editTitle, editBody, currentTime);
 
     try {
       const response = await api.put(`/notes/${id}`, updatedPost);
       setNoteList(
-        noteList.map((post) => (post.id === id ? { ...response.data } : post))
+        sortNewestDate(
+          noteList.map((post) => (post.id === id ? { ...response.data } : post))
+        )
       );
-      setEditTitle("");
-      setEditBody("");
-      navigate("/");
+      showAlert({
+        icon: "success",
+        title: "Note updated",
+        text: "Your changes were saved successfully",
+      });
+      clearFieldsAndRedirect();
     } catch (err) {
-      console.error(`Error: ${err.message}`);
+      logError(err);
+      showAlert({
+        icon: "error",
+        title: "Oops",
+        text: err.message || "Something went wrong",
+      });
     }
   };
 
   const saveChangesPopUp = async (id) => {
-    Swal.fire({
-      theme: "auto",
+    showAlert({
       title: "Do you want to save the changes?",
       showDenyButton: true,
       showCancelButton: true,
@@ -58,76 +83,51 @@ function EditPage() {
     }).then((result) => {
       if (result.isConfirmed) {
         handleEdit(id);
-        Swal.fire({
-          theme: "auto",
-          html: "Changes saved!",
-          timer: 500,
-          timerProgressBar: true,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
       } else if (result.isDenied) {
-        Swal.fire({
-          theme: "auto",
-          text: "Changes are not saved",
-        });
+        showAlert({ text: "Changes are not saved" });
       }
     });
   };
 
+  if (!myEdit) return <ErrorPage />;
+
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "700px",
-        minHeight: "100vh",
-      }}
-    >
-      {myEdit && (
-        <main className="addNote-page">
-          <header className="addNote-header">
-            <div className="edit-left-arrow">
-              <FaArrowLeftLong
-                onClick={() => navigate(`/notes/${myEdit.id}`)}
-              />
+    <div className="edit-page-wrapper">
+      <main className="addNote-page">
+        <header className="addNote-header">
+          <div className="edit-left-arrow">
+            <FaArrowLeftLong onClick={() => navigate(`/notes/${myEdit.id}`)} />
+          </div>
+          <h2>Edit Note</h2>
+          <div className="done-icon-container">
+            <div className="done-svg">
+              <MdDoneOutline onClick={() => saveChangesPopUp(myEdit.id)} />
             </div>
-            <h2>Edit Note</h2>
-            <div className="done-icon-container">
-              <div className="done-svg">
-                <MdDoneOutline onClick={() => saveChangesPopUp(myEdit.id)} />
-              </div>
-            </div>
-          </header>
+          </div>
+        </header>
 
-          <form
-            className="newNoteForm pb-8"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <label htmlFor="noteTitle">Title</label>
-            <input
-              type="text"
-              required
-              placeholder="Title"
-              id="noteTitle"
-              autoFocus
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              maxLength={100}
-            />
+        <form className="newNoteForm pb-8" onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="noteTitle">Title</label>
+          <input
+            type="text"
+            required
+            placeholder="Title"
+            id="noteTitle"
+            autoFocus
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            maxLength={100}
+          />
 
-            <label htmlFor="noteBody">Body</label>
-            <textarea
-              id="noteBody"
-              required
-              value={editBody}
-              onChange={(e) => setEditBody(e.target.value)}
-            />
-          </form>
-
-          {/* <Footer /> */}
-        </main>
-      )}
+          <label htmlFor="noteBody">Body</label>
+          <textarea
+            id="noteBody"
+            required
+            value={editBody}
+            onChange={(e) => setEditBody(e.target.value)}
+          />
+        </form>
+      </main>
     </div>
   );
 }

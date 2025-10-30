@@ -43,6 +43,10 @@ button {
   font-size: 0.9rem;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .App {
   width: 100%;
   height: 100vh;
@@ -315,7 +319,7 @@ ul {
   border-bottom: 1px solid #2f2f2f;
 }
 
-.each-note article {
+.eachNote-article {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -324,16 +328,18 @@ ul {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #444 #111;
+  padding-bottom: 20px;
+  background-color: #111111;
 }
 
-.each-note article::-webkit-scrollbar {
+.eachNote-article::-webkit-scrollbar {
   width: 6px;
 }
-.each-note article::-webkit-scrollbar-thumb {
+.eachNote-article::-webkit-scrollbar-thumb {
   background-color: #444;
   border-radius: 4px;
 }
-.each-note article::-webkit-scrollbar-track {
+.eachNote-article::-webkit-scrollbar-track {
   background-color: #111;
 }
 
@@ -373,6 +379,12 @@ ul {
   flex-direction: column;
   align-items: center;
   color: #f6f6f6dd;
+}
+
+.edit-page-wrapper {
+  width: 100%;
+  max-width: 700px;
+  min-height: 100vh;
 }
 
 .edit-svg,
@@ -501,9 +513,9 @@ ul {
   position: absolute;
   top: -6px;
   right: -10px;
-  background-color: #bdddfc;
+  background-color: #facc15;
   color: #111;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   font-weight: bold;
   border-radius: 50%;
   padding: 2px 6px;
@@ -535,6 +547,11 @@ ul {
 
 .retry-btn:hover {
   background-color: #555;
+}
+
+.err-page,
+.err-page * {
+  color: #f6f6f6dd;
 }
 
 @media (max-width: 400px) {
