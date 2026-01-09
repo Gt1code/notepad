@@ -12,3 +12,7 @@ A simple and responsive notepad web app built with **React**, **Node.js**, and *
 - **React** for frontend
 - **Node.js** for dependency management (via npm)
 - **HTML/CSS** for structure and styling
+
+## Live Demo
+
+https://notepad-v1.onrender.com
