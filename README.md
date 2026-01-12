@@ -1,10 +1,12 @@
 # Notepad Web App
 
-![](./home.webp)
-![](./note_1.png)
-![](./search_filter.png)
-
 A simple and responsive notepad web app built with **React**, **Node.js**, and **HTML/CSS**.
+
+## Screenshots
+
+![Home Page](public/screenshots/home.webp)
+![Individual Note Page](public/screenshots/note_1.png)
+![Search Feature](public/screenshots/search_filter.png)
 
 ## Features
 
