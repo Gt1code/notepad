@@ -4,9 +4,8 @@ import { NotesContext } from "../contexts/NotesContext";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import api from "../api/NotesData";
-import Swal from "sweetalert2";
-import { showAlert } from "../utilities/Alert";
+import { toast } from "sonner";
+import { showAlert } from "@/utilities/Alert";
 import ErrorPage from "../components/ErrorPage";
 
 function EachNote() {
@@ -17,38 +16,26 @@ function EachNote() {
   const note = noteList.find((note) => note.id.toString() === noteId);
 
   // handleDelete function
-  const handleDelete = async (id) => {
-    if (!navigator.onLine)
-      return showAlert({
-        icon: "warning",
-        title: "offline",
-        text: "Please connect to the Internet before deleting.",
-      });
-
+  const handleDelete = (id) => {
     try {
-      await api.delete(`/notes/${id.toString()}`);
       const filteredList = noteList.filter((note) => note.id !== id);
       setNoteList(filteredList);
-      showAlert({
-        html: "deleted",
-        timer: 500,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+
+      toast.success("Note deleted", {
+        position: "top-right",
+        duration: 1000,
       });
       navigate("/");
     } catch (err) {
       logError(err);
-      showAlert({
-        icon: "error",
-        title: "Oops",
-        text: err.message || "Something went wrong",
+      toast.error("Failed to delete note", {
+        position: "top-right",
+        duration: 1000,
       });
     }
   };
 
-  const deletePopUp = async (id) => {
+  const deletePopUp = (id) => {
     showAlert({
       title: "Are you sure?",
       text: "You won't be able to revert this!",

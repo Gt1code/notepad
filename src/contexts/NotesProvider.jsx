@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { NotesContext } from "./NotesContext";
 import { format } from "date-fns";
-import useAxiosFetch from "../hooks/useAxiosFetch";
+
+// localStorage helpers
+const getStoredNotes = () => JSON.parse(localStorage.getItem("notes") || "[]");
+const saveNotes = (notes) =>
+  localStorage.setItem("notes", JSON.stringify(notes));
 
 function NotesProvider({ children }) {
   const [noteList, setNoteList] = useState([]);
@@ -10,15 +14,19 @@ function NotesProvider({ children }) {
   const [newNoteTitle, setNewNoteTitle] = useState("");
   const [newNoteBody, setNewNoteBody] = useState("");
 
+  // Replaces: isLoading, fetchError, refetch from useAxiosFetch
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
   // All 4 Sorting Functions
   const sortTitleAscend = (data) =>
     [...data].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
     );
 
   const sortTitleDescend = (data) =>
     [...data].sort((a, b) =>
-      b.title.localeCompare(a.title, undefined, { sensitivity: "base" })
+      b.title.localeCompare(a.title, undefined, { sensitivity: "base" }),
     );
 
   const sortOldestDate = (dateObj) =>
@@ -27,14 +35,25 @@ function NotesProvider({ children }) {
   const sortNewestDate = (dateObj) =>
     [...dateObj].sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
 
-  const { data, fetchError, isLoading, refetch } = useAxiosFetch(
-    "https://notepad-c972.onrender.com/notes"
-  );
-
-  // fetch data on mount/reload
+  // Replaces: useAxiosFetch + useEffect([data]) — load notes from localStorage on mount
   useEffect(() => {
-    setNoteList(sortNewestDate(data));
-  }, [data]);
+    try {
+      const stored = getStoredNotes();
+      setNoteList(sortNewestDate(stored));
+    } catch (err) {
+      setFetchError("Failed to load notes from storage.");
+      logError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Sync noteList to localStorage whenever it changes (replaces API PUT/POST/DELETE calls)
+  useEffect(() => {
+    if (!isLoading) {
+      saveNotes(noteList);
+    }
+  }, [isLoading, noteList]);
 
   // search filter
   useEffect(() => {
@@ -42,7 +61,7 @@ function NotesProvider({ children }) {
     const filteredList = noteList.filter(
       (note) =>
         note.title?.toLowerCase().includes(lowerSearch) ||
-        note.body?.toLowerCase().includes(lowerSearch)
+        note.body?.toLowerCase().includes(lowerSearch),
     );
     setSearchResult(filteredList);
   }, [search, noteList]);
@@ -52,18 +71,13 @@ function NotesProvider({ children }) {
     return formatDateTime;
   };
 
+  // builds a new note object with a unique ID, current datetime, and formatted display date
   const buildNote = () => {
-    const orderOfId = [...noteList].sort((a, b) => a.id - b.id);
-
-    const newId = orderOfId.length
-      ? Number(orderOfId[orderOfId.length - 1].id) + 1
-      : 1;
-
     const currentDate = new Date();
     const formatDateTime = getCurrentTime(currentDate);
 
     const newNoteObj = {
-      id: newId.toString(),
+      id: crypto.randomUUID(),
       datetime: currentDate.toISOString(),
       displayDate: formatDateTime,
       title: newNoteTitle.trim(),
@@ -71,6 +85,11 @@ function NotesProvider({ children }) {
     };
 
     return newNoteObj;
+  };
+
+  const refetch = () => {
+    const stored = getStoredNotes();
+    setNoteList(sortNewestDate(stored));
   };
 
   const logError = (err) => {
@@ -97,9 +116,11 @@ function NotesProvider({ children }) {
         newNoteBody,
         setNewNoteBody,
         isLoading,
+        setIsLoading,
         fetchError,
         refetch,
         logError,
+        saveNotes,
       }}
     >
       {children}

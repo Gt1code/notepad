@@ -3,19 +3,21 @@ import { NotesContext } from "../contexts/NotesContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdDoneOutline } from "react-icons/md";
-import { format } from "date-fns";
-import api from "../api/NotesData";
 import { showAlert } from "../utilities/Alert";
 import ErrorPage from "../components/ErrorPage";
+import { toast } from "sonner";
+
+const currentDate = new Date();
 
 function EditPage() {
   const navigate = useNavigate();
-  const { noteList, setNoteList, sortNewestDate, logError } =
+  const { noteList, setNoteList, sortNewestDate, logError, getCurrentTime } =
     useContext(NotesContext);
-  const { editId } = useParams();
-  const myEdit = noteList.find((edit) => edit.id.toString() === editId);
   const [editTitle, setEditTitle] = useState("");
   const [editBody, setEditBody] = useState("");
+
+  const { editId } = useParams();
+  const myEdit = noteList.find((edit) => edit.id.toString() === editId);
 
   useEffect(() => {
     if (myEdit) {
@@ -30,50 +32,45 @@ function EditPage() {
     navigate("/");
   };
 
-  const buildUpdatedNote = (id, title, body, time) => ({
-    id: id.toString(),
-    title: title.trim(),
+  const buildUpdatedNote = (title, body, time) => ({
+    id: crypto.randomUUID(),
     datetime: time.toISOString(),
-    displayDate: format(time, "dd/MM/yy, pp"),
+    displayDate: getCurrentTime(currentDate),
+    title: title.trim(),
     body: body.trim(),
   });
 
   // handleEdit function
-  const handleEdit = async (id) => {
-    if (!navigator.onLine)
-      return showAlert({
-        icon: "warning",
-        title: "offline",
-        text: "Please connect to the Internet before saving.",
-      });
-
+  const handleEdit = (id) => {
     const currentTime = new Date();
-    const updatedPost = buildUpdatedNote(id, editTitle, editBody, currentTime);
+    const updatedPost = buildUpdatedNote(editTitle, editBody, currentTime);
 
     try {
-      const response = await api.put(`/notes/${id}`, updatedPost);
+      const getStored = JSON.parse(localStorage.getItem("noteList")) || [];
+      const updatedList = getStored.map((note) =>
+        note.id === id ? { ...updatedPost } : note,
+      );
+      localStorage.setItem("noteList", JSON.stringify(updatedList));
       setNoteList(
         sortNewestDate(
-          noteList.map((post) => (post.id === id ? { ...response.data } : post))
-        )
+          noteList.map((post) => (post.id === id ? { ...updatedPost } : post)),
+        ),
       );
-      showAlert({
-        icon: "success",
-        title: "Note updated",
-        text: "Your changes were saved successfully",
+      toast.success("Note updated", {
+        position: "top-right",
+        duration: 1000,
       });
       clearFieldsAndRedirect();
     } catch (err) {
       logError(err);
-      showAlert({
-        icon: "error",
-        title: "Oops",
-        text: err.message || "Something went wrong",
+      toast.error("Failed to update note", {
+        position: "top-right",
+        duration: 1000,
       });
     }
   };
 
-  const saveChangesPopUp = async (id) => {
+  const saveChangesPopUp = (id) => {
     showAlert({
       title: "Do you want to save the changes?",
       showDenyButton: true,
@@ -89,7 +86,9 @@ function EditPage() {
     });
   };
 
-  if (!myEdit) return <ErrorPage />;
+  if (!myEdit) {
+    return <ErrorPage />;
+  }
 
   return (
     <div className="edit-page-wrapper">
@@ -131,5 +130,4 @@ function EditPage() {
     </div>
   );
 }
-
 export default EditPage;

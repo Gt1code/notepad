@@ -3,9 +3,7 @@ import { MdDoneOutline } from "react-icons/md";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { NotesContext } from "../contexts/NotesContext";
-import api from "../api/NotesData";
-import Swal from "sweetalert2";
-import { showAlert } from "../utilities/Alert";
+import { toast } from "sonner";
 
 function AddNotePage() {
   const navigate = useNavigate();
@@ -26,34 +24,21 @@ function AddNotePage() {
     navigate("/");
   };
 
-  const addNote = async () => {
-    if (!navigator.onLine)
-      return showAlert({
-        icon: "warning",
-        title: "offline",
-        text: "Please connect to the Internet before saving.",
-      });
-
+  const addNote = () => {
     try {
       const newNoteObj = buildNote();
-      const response = await api.post("/notes", newNoteObj);
-      const updatedNotes = [...noteList, response.data].reverse();
+      const updatedNotes = [newNoteObj, ...noteList];
       setNoteList(updatedNotes);
       clearFieldsAndRedirect();
-      showAlert({
-        html: "Note added",
-        timer: 500,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+      toast.success("Note added", {
+        position: "top-right",
+        duration: 1000,
       });
     } catch (err) {
       logError(err);
-      showAlert({
-        icon: "error",
-        title: "Oops",
-        text: err.message || "Something went wrong",
+      toast.error("Failed to add note", {
+        position: "top-right",
+        duration: 1000,
       });
     }
   };
