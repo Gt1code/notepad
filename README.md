@@ -133,4 +133,4 @@ Notes are stored in the browser's `localStorage` under the key `"notes"` as a JS
 
 ## 📄 License
 
-MIT
+[MIT](./LICENSE)
