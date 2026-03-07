@@ -22,14 +22,14 @@ function EachNote() {
       setNoteList(filteredList);
 
       toast.success("Note deleted", {
-        position: "top-right",
+        position: "top-center",
         duration: 1000,
       });
       navigate("/");
     } catch (err) {
       logError(err);
       toast.error("Failed to delete note", {
-        position: "top-right",
+        position: "top-center",
         duration: 1000,
       });
     }

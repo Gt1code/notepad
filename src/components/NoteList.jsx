@@ -9,15 +9,15 @@ function NoteList() {
 
   return (
     <main className="note-list">
-      <ul>
-        {displayList.map((list) => (
-          <NoteItem key={list.id} list={list} />
-        ))}
-      </ul>
-
-      {!displayList.length && (
+      {displayList.length ? (
+        <ul>
+          {displayList.map((list) => (
+            <NoteItem key={list.id} list={list} />
+          ))}
+        </ul>
+      ) : (
         <div className="no-match">
-          <h2>Notes are empty</h2>
+          {search ? "No matching notes found." : "No available notes."}
         </div>
       )}
     </main>

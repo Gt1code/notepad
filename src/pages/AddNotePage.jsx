@@ -31,13 +31,13 @@ function AddNotePage() {
       setNoteList(updatedNotes);
       clearFieldsAndRedirect();
       toast.success("Note added", {
-        position: "top-right",
+        position: "top-center",
         duration: 1000,
       });
     } catch (err) {
       logError(err);
       toast.error("Failed to add note", {
-        position: "top-right",
+        position: "top-center",
         duration: 1000,
       });
     }
