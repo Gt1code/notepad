@@ -7,11 +7,9 @@ import { showAlert } from "../utilities/Alert";
 import ErrorPage from "../components/ErrorPage";
 import { toast } from "sonner";
 
-const currentDate = new Date();
-
 function EditPage() {
   const navigate = useNavigate();
-  const { noteList, setNoteList, sortNewestDate, logError, getCurrentTime } =
+  const { noteList, setNoteList, sortNewestDate, getCurrentTime } =
     useContext(NotesContext);
   const [editTitle, setEditTitle] = useState("");
   const [editBody, setEditBody] = useState("");
@@ -32,42 +30,29 @@ function EditPage() {
     navigate("/");
   };
 
-  const buildUpdatedNote = (title, body, time) => ({
-    id: crypto.randomUUID(),
-    datetime: time.toISOString(),
-    displayDate: getCurrentTime(currentDate),
-    title: title.trim(),
-    body: body.trim(),
-  });
-
-  // handleEdit function
+  // handle edit
   const handleEdit = (id) => {
-    const currentTime = new Date();
-    const updatedPost = buildUpdatedNote(editTitle, editBody, currentTime);
-
-    try {
-      const getStored = JSON.parse(localStorage.getItem("noteList")) || [];
-      const updatedList = getStored.map((note) =>
-        note.id === id ? { ...updatedPost } : note,
-      );
-      localStorage.setItem("noteList", JSON.stringify(updatedList));
-      setNoteList(
-        sortNewestDate(
-          noteList.map((post) => (post.id === id ? { ...updatedPost } : post)),
-        ),
-      );
-      toast.success("Note updated", {
-        position: "top-right",
-        duration: 1000,
-      });
-      clearFieldsAndRedirect();
-    } catch (err) {
-      logError(err);
-      toast.error("Failed to update note", {
-        position: "top-right",
-        duration: 1000,
-      });
+    if (!editTitle.trim() && !editBody.trim()) {
+      toast.error("Title and body cannot be empty", { position: "top-right" });
+      return;
     }
+
+    const currentTime = new Date();
+    const updatedNote = {
+      id,
+      datetime: currentTime.toISOString(),
+      displayDate: getCurrentTime(currentTime),
+      title: editTitle.trim(),
+      body: editBody.trim(),
+    };
+
+    const updatedList = sortNewestDate(
+      noteList.map((note) => (note.id === id ? updatedNote : note)),
+    );
+
+    setNoteList(updatedList);
+    toast.success("Note updated", { position: "top-right", duration: 1000 });
+    clearFieldsAndRedirect();
   };
 
   const saveChangesPopUp = (id) => {
@@ -110,7 +95,7 @@ function EditPage() {
           <input
             type="text"
             required
-            placeholder="Title"
+            placeholder="Edit Title"
             id="noteTitle"
             autoFocus
             value={editTitle}
@@ -124,6 +109,7 @@ function EditPage() {
             required
             value={editBody}
             onChange={(e) => setEditBody(e.target.value)}
+            placeholder="Edit Body"
           />
         </form>
       </main>

@@ -93,7 +93,7 @@ function NotesProvider({ children }) {
   };
 
   const logError = (err) => {
-    console.log(`Error details: ${err}`);
+    console.error(`Error details: ${err}`);
   };
 
   return (

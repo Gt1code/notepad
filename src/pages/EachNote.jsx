@@ -10,29 +10,17 @@ import ErrorPage from "../components/ErrorPage";
 
 function EachNote() {
   const navigate = useNavigate();
-  const { noteList, setNoteList, logError } = useContext(NotesContext);
+  const { noteList, setNoteList } = useContext(NotesContext);
   const { noteId } = useParams();
 
   const note = noteList.find((note) => note.id.toString() === noteId);
 
   // handleDelete function
   const handleDelete = (id) => {
-    try {
-      const filteredList = noteList.filter((note) => note.id !== id);
-      setNoteList(filteredList);
-
-      toast.success("Note deleted", {
-        position: "top-center",
-        duration: 1000,
-      });
-      navigate("/");
-    } catch (err) {
-      logError(err);
-      toast.error("Failed to delete note", {
-        position: "top-center",
-        duration: 1000,
-      });
-    }
+    const filteredList = noteList.filter((note) => note.id !== id);
+    setNoteList(filteredList);
+    toast.success("Note deleted", { position: "top-center", duration: 1000 });
+    navigate("/");
   };
 
   const deletePopUp = (id) => {

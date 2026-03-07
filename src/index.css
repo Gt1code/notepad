@@ -189,7 +189,7 @@
     height: 64px;
     padding: 0.9rem;
     background-color: var(--Light-note);
-    z-index: 9999999;
+    z-index: 100;
   }
 
   .form {
@@ -537,7 +537,7 @@
   }
 
   .delete-svg {
-    color: rgb(255, 162, 0);
+    color: #e53e3e;
   }
 
   .edit-svg:hover,
@@ -557,7 +557,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
-    z-index: 999;
+    z-index: 200;
     min-height: 100vh;
   }
 
@@ -565,13 +565,14 @@
     position: fixed;
     top: 64px;
     right: 1rem;
-    width: 250px;
+    width: 100%;
+    max-width: 250px;
     background: #111111;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
     color: rgba(245, 245, 245, 0.871);
     padding: 1rem;
     border-radius: 10px;
-    z-index: 1000;
+    z-index: 300;
 
     opacity: 0;
     pointer-events: none;
@@ -636,8 +637,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    /* box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); */
-    z-index: 1000;
+    z-index: 90;
     padding-bottom: env(safe-area-inset-bottom);
   }
 

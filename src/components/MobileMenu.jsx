@@ -23,6 +23,9 @@ const MobileMenu = ({ toggleMenu, open }) => {
   const handleDeleteAll = () => {
     toggleMenu();
 
+    // do nothing if there are no notes
+    if (!noteList.length) return;
+
     showAlert({
       title: "Delete all notes?",
       text: "This cannot be undone.",

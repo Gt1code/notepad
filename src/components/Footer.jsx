@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { NotesContext } from "../contexts/NotesContext";
 
 function Footer() {
-  const { noteList } = useContext(NotesContext);
+  const { noteList, search, searchResult } = useContext(NotesContext);
 
   return (
     <footer className="footer" role="navigation">
@@ -15,7 +15,7 @@ function Footer() {
         >
           <MdStickyNote2 />
           <div className={noteList.length ? "notes-length" : "d-none"}>
-            {noteList.length}
+            {search ? searchResult.length : noteList.length}
           </div>
         </NavLink>
       </section>

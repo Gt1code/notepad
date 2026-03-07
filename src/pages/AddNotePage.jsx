@@ -15,7 +15,6 @@ function AddNotePage() {
     buildNote,
     noteList,
     setNoteList,
-    logError,
   } = useContext(NotesContext);
 
   const clearFieldsAndRedirect = () => {
@@ -25,22 +24,10 @@ function AddNotePage() {
   };
 
   const addNote = () => {
-    try {
-      const newNoteObj = buildNote();
-      const updatedNotes = [newNoteObj, ...noteList];
-      setNoteList(updatedNotes);
-      clearFieldsAndRedirect();
-      toast.success("Note added", {
-        position: "top-center",
-        duration: 1000,
-      });
-    } catch (err) {
-      logError(err);
-      toast.error("Failed to add note", {
-        position: "top-center",
-        duration: 1000,
-      });
-    }
+    const newNoteObj = buildNote();
+    setNoteList([newNoteObj, ...noteList]);
+    clearFieldsAndRedirect();
+    toast.success("Note added", { position: "top-center", duration: 1000 });
   };
 
   return (
