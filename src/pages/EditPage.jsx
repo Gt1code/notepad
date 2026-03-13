@@ -33,7 +33,10 @@ function EditPage() {
   // handle edit
   const handleEdit = (id) => {
     if (!editTitle.trim() && !editBody.trim()) {
-      toast.error("Title and body cannot be empty", { position: "top-right" });
+      toast.error("Title and body cannot be empty", {
+        position: "top-center",
+        duration: 2000,
+      });
       return;
     }
 
@@ -51,7 +54,7 @@ function EditPage() {
     );
 
     setNoteList(updatedList);
-    toast.success("Note updated", { position: "top-right", duration: 1000 });
+    toast.success("Note updated", { position: "top-center", duration: 1000 });
     clearFieldsAndRedirect();
   };
 

@@ -9,11 +9,8 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <NotesProvider>
       <Router>
-        {/* <Routes>
-          <Route path="/*" element={<App />} />
-        </Routes> */}
         <App />
       </Router>
     </NotesProvider>
-  </StrictMode>
+  </StrictMode>,
 );
